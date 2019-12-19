@@ -30,7 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.5.7",
+    "mongoose": "^5.7.5",
     "xlsx-populate": "^1.20.1"
   },
   "devDependencies": {
