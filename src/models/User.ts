@@ -3,7 +3,7 @@ import updateTimes from "./plugins/updateTimes";
 import autoPopulate from "./plugins/autoPopulate";
 
 const User = new Schema({
-  role: { type: String, default: "customer" },
+  role: { type: String },
   login: { type: String, index: { unique: true, sparse: true } },
   password: { type: String, select: false },
   name: String,
@@ -28,6 +28,7 @@ const User = new Schema({
         )}`
     }
   },
+  workNo: String,
   avatarUrl: String,
   region: String,
   country: String,
@@ -58,6 +59,7 @@ export interface IUser extends mongoose.Document {
   name?: string;
   gender?: string;
   mobile?: string;
+  workNo?: string;
   avatarUrl?: string;
   region?: string;
   country?: string;
