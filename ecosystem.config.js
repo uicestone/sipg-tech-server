@@ -17,7 +17,8 @@ module.exports = {
       ref: "origin/master",
       repo: "https://github.com/uicestone/sipg-tech-server",
       path: "/var/www/sipg-tech-server",
-      "post-deploy": "yarn && pm2 startOrRestart ecosystem.config.js"
+      "post-deploy":
+        "yarn && yarn build && pm2 startOrRestart ecosystem.config.js"
     },
     testing: {
       user: "www-data",
@@ -25,7 +26,8 @@ module.exports = {
       ref: "origin/testing",
       repo: "https://github.com/uicestone/sipg-tech-server",
       path: "/var/www/sipg-tech-server",
-      "post-deploy": "yarn && pm2 startOrRestart ecosystem.config.js"
+      "post-deploy":
+        "yarn && yarn build && pm2 startOrRestart ecosystem.config.js"
     }
   }
 };
