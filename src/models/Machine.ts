@@ -5,8 +5,21 @@ import updateTimes from "./plugins/updateTimes";
 class Machine {
   @prop()
   num: string;
+
   @prop()
   desc: string;
+
+  @prop()
+  type: string;
+
+  @prop()
+  totalHours: number;
+
+  @prop()
+  brand: string;
+
+  @prop()
+  model: string;
 }
 
 export default getModelForClass(Machine, {

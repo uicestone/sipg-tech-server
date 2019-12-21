@@ -9,6 +9,19 @@ export default router => {
   router
     .route("/machine")
 
+    // create a machine
+    .post(
+      handleAsyncErrors(async (req, res) => {
+        if (req.user.role !== "admin") {
+          throw new HttpError(403);
+        }
+        const machine = new Machine(req.body);
+        await machine.save();
+
+        res.json(machine);
+      })
+    )
+
     // get all the machines
     .get(
       paginatify,
@@ -18,6 +31,10 @@ export default router => {
         const sort = parseSortString(req.query.order) || {
           createdAt: -1
         };
+
+        if (req.query.num) {
+          query.find({ num: new RegExp("^" + req.query.num) });
+        }
 
         let total = await query.countDocuments();
         const page = await query
