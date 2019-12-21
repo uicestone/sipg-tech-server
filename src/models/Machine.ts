@@ -1,24 +1,22 @@
-import mongoose, { Schema } from "mongoose";
+import { prop, getModelForClass, plugin } from "@typegoose/typegoose";
 import updateTimes from "./plugins/updateTimes";
 
-const Machine = new Schema({
-  num: String,
-  desc: String
-});
-
-Machine.plugin(updateTimes);
-
-Machine.set("toJSON", {
-  getters: true,
-  transform: function(doc, ret, options) {
-    delete ret._id;
-    delete ret.__v;
-  }
-});
-
-export interface IMachine extends mongoose.Document {
+@plugin(updateTimes)
+class Machine {
+  @prop()
   num: string;
+  @prop()
   desc: string;
 }
 
-export default mongoose.model<IMachine>("Machine", Machine);
+export default getModelForClass(Machine, {
+  schemaOptions: {
+    toJSON: {
+      getters: true,
+      transform: function(doc, ret, options) {
+        delete ret._id;
+        delete ret.__v;
+      }
+    }
+  }
+});

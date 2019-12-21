@@ -23,7 +23,8 @@ console.log(`[SYS] System time is ${new Date()}`);
 
 mongoose.connect(mongooseUrl, {
   useNewUrlParser: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true
 });
 mongoose.set("useCreateIndex", true);
 mongoose.Promise = global.Promise;

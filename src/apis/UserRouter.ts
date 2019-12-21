@@ -1,8 +1,9 @@
+import { DocumentType } from "@typegoose/typegoose";
 import paginatify from "../middlewares/paginatify";
 import handleAsyncErrors from "../utils/handleAsyncErrors";
 import { parseSortString } from "../utils/helpers";
 import HttpError from "../utils/HttpError";
-import User, { IUser } from "../models/User";
+import userModel, { User } from "../models/User";
 import { hashPwd } from "../utils/helpers";
 
 const { DEBUG } = process.env;
@@ -24,14 +25,14 @@ export default router => {
           req.body.password = await hashPwd(req.body.password);
         }
         if (req.body.mobile) {
-          const userMobileExists = await User.findOne({
+          const userMobileExists = await userModel.findOne({
             mobile: req.body.mobile
           });
           if (userMobileExists) {
             throw new HttpError(409, `手机号${req.body.mobile}已被使用.`);
           }
         }
-        const user = new User(req.body);
+        const user = new userModel(req.body);
         await user.save();
 
         res.json(user);
@@ -47,7 +48,7 @@ export default router => {
           throw new HttpError(403);
         }
         const { limit, skip } = req.pagination;
-        const query = User.find();
+        const query = userModel.find();
         const sort = parseSortString(req.query.order) || {
           createdAt: -1
         };
@@ -94,7 +95,7 @@ export default router => {
 
     .all(
       handleAsyncErrors(async (req, res, next) => {
-        const user = await User.findById(req.params.userId);
+        const user = await userModel.findById(req.params.userId);
         if (
           !["admin", "manager"].includes(req.user.role) &&
           req.user.id !== req.params.userId
@@ -102,7 +103,7 @@ export default router => {
           throw new HttpError(403);
         }
         if (!user) {
-          throw new HttpError(404, `User not found: ${req.params.userId}`);
+          throw new HttpError(404, `userModel not found: ${req.params.userId}`);
         }
         req.item = user;
         next();
@@ -124,13 +125,13 @@ export default router => {
             delete req.body[f];
           });
         }
-        const user = req.item as IUser;
+        const user = req.item as DocumentType<User>;
         if (req.body.password) {
-          console.log(`[USR] User ${user.id} password reset.`);
+          console.log(`[USR] userModel ${user.id} password reset.`);
           req.body.password = await hashPwd(req.body.password);
         }
         if (req.body.mobile) {
-          const userMobileExists = await User.findOne({
+          const userMobileExists = await userModel.findOne({
             mobile: req.body.mobile,
             _id: { $ne: user.id }
           });

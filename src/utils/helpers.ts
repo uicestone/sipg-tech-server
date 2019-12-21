@@ -1,6 +1,7 @@
 import { sign, verify } from "jsonwebtoken";
 import { hash, compare } from "bcryptjs";
-import { IUser } from "../models/User";
+import { DocumentType } from "@typegoose/typegoose";
+import { User } from "../models/User";
 
 interface TokenData {
   userId: number;
@@ -13,7 +14,7 @@ export const hashPwd = (password: string) => hash(password, 10);
 export const comparePwd = (password: string, hashPassword: string) =>
   compare(password, hashPassword);
 
-export const signToken = (user: IUser): string => {
+export const signToken = (user: DocumentType<User>): string => {
   return sign(
     {
       userId: user.id,
