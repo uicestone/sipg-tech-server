@@ -24,7 +24,12 @@ class Machine {
   @prop()
   model: string;
 
-  @prop()
+  @prop({
+    default: [
+      { name: "机油、机滤", cycle: 100, cycleUnit: "小时", last: 0 },
+      { name: "刹车油", cycle: 500, cycleUnit: "小时", last: 0 }
+    ]
+  })
   careItems: {
     name: string;
     cycle: number;
@@ -35,7 +40,6 @@ class Machine {
 
   updateDueCareItems() {
     this.careItems = this.careItems.map(item => {
-      console.log(item.last);
       return {
         ...item,
         cycleLeft: item.cycle - (this.totalHours - (item.last || 0))
