@@ -13,21 +13,11 @@ module.exports = {
   deploy: {
     production: {
       user: "www-data",
-      host: [{ host: "sipglg-eth.codeispoetry.tech", port: "5222" }],
-      ref: "origin/master",
-      repo: "https://github.com/uicestone/sipg-tech-server",
-      path: "/var/www/sipg-tech-server",
-      "post-deploy":
-        "yarn && yarn build && cp -r build/ dist/ && pm2 startOrRestart ecosystem.config.js"
-    },
-    testing: {
-      user: "www-data",
       host: ["stirad.com"],
       ref: "origin/testing",
       repo: "https://github.com/uicestone/sipg-tech-server",
       path: "/var/www/sipg-tech-server",
-      "post-deploy":
-        "yarn && yarn build && cp -r build/ dist/ && pm2 startOrRestart ecosystem.config.js"
+      "post-deploy": "yarn && pm2 startOrRestart ecosystem.config.js"
     }
   }
 };
