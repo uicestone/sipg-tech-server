@@ -14,7 +14,7 @@ module.exports = {
     production: {
       user: "www-data",
       host: ["stirad.com"],
-      ref: "origin/testing",
+      ref: "origin/master",
       repo: "https://github.com/uicestone/sipg-tech-server",
       path: "/var/www/sipg-tech-server",
       "post-deploy": "yarn && pm2 startOrRestart ecosystem.config.js"
