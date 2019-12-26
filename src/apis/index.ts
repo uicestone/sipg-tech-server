@@ -8,6 +8,7 @@ import CodeRouter from "./MachineRouter";
 import StatsRouter from "./StatsRouter";
 import UserRouter from "./UserRouter";
 import MachineRouter from "./MachineRouter";
+import ModelRouter from "./ModelRouter";
 
 export default (app, router) => {
   // register routes
@@ -16,6 +17,7 @@ export default (app, router) => {
     CodeRouter,
     ConfigRouter,
     MachineRouter,
+    ModelRouter,
     StatsRouter,
     UserRouter
   ].forEach(R => {
