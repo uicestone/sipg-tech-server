@@ -11,9 +11,19 @@ class Model {
 }
 
 export class CareItem {
+  @prop()
   category: string;
+
+  @prop()
   name: string;
+
+  @prop()
   cycle: number;
+
+  @prop()
+  cycleAlert: number;
+
+  @prop()
   cycleType: "runHour" | "month" | "onDemand";
 }
 

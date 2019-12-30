@@ -1,8 +1,10 @@
+import moment from "moment";
 import paginatify from "../middlewares/paginatify";
 import handleAsyncErrors from "../utils/handleAsyncErrors";
 import { parseSortString } from "../utils/helpers";
 import HttpError from "../utils/HttpError";
 import Machine from "../models/Machine";
+import CareRecord from "../models/CareRecord";
 
 export default router => {
   // Machine CURD
@@ -83,6 +85,27 @@ export default router => {
           throw new HttpError(403);
         }
         const machine = req.item;
+        if (req.body.careItems) {
+          req.body.careItems.forEach(async itemUpdate => {
+            const itemOrigin = machine.careItems.find(
+              i => i.name === itemUpdate.name
+            );
+            if (itemOrigin.last !== itemUpdate.last) {
+              if (itemUpdate.last < itemOrigin.last) {
+                throw new HttpError(400, "时间/计数不可小于上次保养");
+              }
+              // create care record
+              const record = new CareRecord({
+                careItem: { ...itemOrigin, ...itemUpdate },
+                machine,
+                date: moment().format("YYYY-MM-DD"),
+                operator: req.user
+              });
+
+              await record.save();
+            }
+          });
+        }
         machine.set(req.body);
         await machine.save();
         res.json(machine);

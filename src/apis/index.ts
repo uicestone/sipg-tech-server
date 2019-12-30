@@ -3,8 +3,8 @@ import methodOverride from "method-override";
 import authenticate from "../middlewares/authenticate";
 import castEmbedded from "../middlewares/castEmbedded";
 import AuthRouter from "./AuthRouter";
+import CareRecordRouter from "./CareRecordRouter";
 import ConfigRouter from "./ConfigRouter";
-import CodeRouter from "./MachineRouter";
 import StatsRouter from "./StatsRouter";
 import UserRouter from "./UserRouter";
 import MachineRouter from "./MachineRouter";
@@ -14,7 +14,7 @@ export default (app, router) => {
   // register routes
   [
     AuthRouter,
-    CodeRouter,
+    CareRecordRouter,
     ConfigRouter,
     MachineRouter,
     ModelRouter,
