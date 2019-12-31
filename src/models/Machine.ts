@@ -8,6 +8,13 @@ import Model, { CareItem } from "./Model";
   if (!this.careItems.length && this.model) {
     await this.initCareItems();
   }
+  if (
+    this.isNew ||
+    this.isModified("totalHours") ||
+    this.isModified("careItems")
+  ) {
+    this.recalculateCareItemsCycleLeft();
+  }
 })
 export class Machine {
   @prop({ required: true, unique: true })
@@ -31,56 +38,7 @@ export class Machine {
   @prop()
   model: string;
 
-  @prop({
-    get(careItems: MachineCareItem[]) {
-      return careItems.map(item => {
-        let cycleLeft: number;
-        let cycleAlertLeft: number;
-        let alertLevel = 0;
-        switch (item.cycleType) {
-          case "month":
-            cycleLeft =
-              item.cycle +
-              moment(item.last || this.firstDay).diff(
-                new Date(),
-                "months",
-                true
-              );
-            cycleAlertLeft =
-              item.cycle -
-              item.cycleAlert +
-              moment(item.last || this.firstDay).diff(
-                new Date(),
-                "months",
-                true
-              );
-            break;
-          case "onDemand":
-            cycleLeft = null;
-            cycleAlertLeft = null;
-            break;
-          case "runHour":
-            cycleLeft = item.cycle - (this.totalHours - (item.last || 0));
-            cycleAlertLeft =
-              item.cycle -
-              item.cycleAlert -
-              (this.totalHours - (item.last || 0));
-            break;
-        }
-        if (item.cycle && cycleLeft <= 0) alertLevel = 2;
-        else if (cycleAlertLeft <= 0) alertLevel = 1;
-        return {
-          ...item,
-          cycleLeft,
-          cycleAlertLeft,
-          alertLevel
-        };
-      });
-    },
-    set: val => {
-      return val;
-    }
-  })
+  @prop()
   careItems: MachineCareItem[];
 
   async initCareItems() {
@@ -92,8 +50,45 @@ export class Machine {
       ...i,
       last: 0,
       cycleLeft: null,
-      cycleAlertLeft: null
+      cycleAlertLeft: null,
+      alertLevel: 0
     }));
+  }
+
+  recalculateCareItemsCycleLeft() {
+    this.careItems = this.careItems.map(item => {
+      let cycleLeft: number;
+      let cycleAlertLeft: number;
+      let alertLevel = 0;
+      switch (item.cycleType) {
+        case "month":
+          cycleLeft =
+            item.cycle +
+            moment(item.last || this.firstDay).diff(new Date(), "months", true);
+          cycleAlertLeft =
+            item.cycle -
+            item.cycleAlert +
+            moment(item.last || this.firstDay).diff(new Date(), "months", true);
+          break;
+        case "onDemand":
+          cycleLeft = null;
+          cycleAlertLeft = null;
+          break;
+        case "runHour":
+          cycleLeft = item.cycle - (this.totalHours - (item.last || 0));
+          cycleAlertLeft =
+            item.cycle - item.cycleAlert - (this.totalHours - (item.last || 0));
+          break;
+      }
+      if (item.cycle && cycleLeft <= 0) alertLevel = 2;
+      else if (item.cycle && cycleAlertLeft <= 0) alertLevel = 1;
+      return {
+        ...item,
+        cycleLeft,
+        cycleAlertLeft,
+        alertLevel
+      };
+    });
   }
 }
 
@@ -102,10 +97,13 @@ class MachineCareItem extends CareItem {
   last: number;
 
   @prop()
-  cycleLeft?: number;
+  cycleLeft: number;
 
   @prop()
-  cycleAlertLeft?: number;
+  cycleAlertLeft: number;
+
+  @prop()
+  alertLevel: number;
 }
 
 export default getModelForClass(Machine, {
