@@ -38,6 +38,37 @@ export default router => {
           query.find({ num: new RegExp("^" + req.query.num) });
         }
 
+        if (req.query.model) {
+          query.find({ model: req.query.model });
+        }
+
+        if (req.query.careItem) {
+          // query machines that has alerted / expired care items for the search slug: {category}-{name}
+          const [category, name] = req.query.careItem.split("-");
+
+          query.find({
+            careItems: {
+              $elemMatch: {
+                category,
+                name,
+                alertLevel: { $gt: 0 }
+              }
+            }
+          });
+        }
+
+        if (req.query.alertType === "alert") {
+          query.find({
+            "careItems.alertLevel": 1
+          });
+        }
+
+        if (req.query.alertType === "expired") {
+          query.find({
+            "careItems.alertLevel": 2
+          });
+        }
+
         let total = await query.countDocuments();
         const page = await query
           .find()
