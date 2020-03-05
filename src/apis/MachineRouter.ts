@@ -6,6 +6,22 @@ import HttpError from "../utils/HttpError";
 import Machine from "../models/Machine";
 import CareRecord from "../models/CareRecord";
 
+// setTimeout(async () => {
+//   for (let i = 1063; i <= 1066; i++) {
+//     const machine = new Machine({
+//       num: i.toString(),
+//       type: "牵引车",
+//       firstDay: "2020-01-01",
+//       totalHours: 0,
+//       brand: "重汽",
+//       // @ts-ignore
+//       model: "重汽豪沃牵引车（法士特变速箱）"
+//     });
+//     await machine.save();
+//     console.log(`machine ${i} saved`);
+//   }
+// }, 1e3);
+
 export default router => {
   // Machine CURD
   router
