@@ -1,6 +1,6 @@
 {
   "name": "sipg-tech-server",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "SIPG engineering and technology platform server apis.",
   "scripts": {
     "dev": "nodemon --watch src -e ts --exec 'ts-node ./src/'",

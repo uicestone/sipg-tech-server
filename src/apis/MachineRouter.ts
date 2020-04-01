@@ -128,9 +128,6 @@ export default router => {
 
     .put(
       handleAsyncErrors(async (req, res) => {
-        if (req.user.role !== "admin") {
-          throw new HttpError(403);
-        }
         const machine = req.item;
         if (req.body.careItems) {
           req.body.careItems.forEach(async itemUpdate => {
